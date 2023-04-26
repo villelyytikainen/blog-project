@@ -4,8 +4,9 @@ const path = require('path')
 const dotenv = require('dotenv').config()
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
-const bcrypt = require('bcryptjs')
 const postRouter = require('./routes/BlogRoutes')
+const userRouter = require('./routes/UserRoutes')
+const WebSocket = require('ws')
 //const openai = require('./services/OpenAI')
 const port = 3001
 
@@ -24,15 +25,9 @@ app.use(express.static('../client/'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use('/api/posts', postRouter)
+app.use('/api/users', userRouter)
 
 //openai.sendPrompt().then((req,res) => console.log(req.data.choices))
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/index.html'))
-})
-
-app.get('/ad', (req,res) => {
-    res.sendFile(path.join(__dirname, '../client/ad.html'))
-})
 
 app.listen(port);
 
