@@ -53,13 +53,12 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 2rem;
-    background-color: #5B8FB9;
     margin: 0;
     padding: 0;
 }
 
 .latest-posts {
-    background-color: red;
+
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -70,16 +69,20 @@ body {
 }
 
 .older-posts {
-    background-color: blue;
-    margin: 0;
     display: flex;
     flex-direction: row;
     gap: 1rem;
     margin: 0;
+    flex-wrap: wrap;
+    max-width: 60%;
+    justify-content: center;
 }
 
 .post-item {
-    border: 1px solid #5B8FB9;
+    border: 1px solid white;
+    border-radius: 1rem;
+    margin: 1rem 0;
+    padding: 1rem;
     min-height: 25rem;
     min-width: 17rem;
     max-width: 17rem;
@@ -101,12 +104,13 @@ body {
     height: 17rem;
     width: 15rem;
     border: 1px solid #B6EADA;
+    border-radius: 1rem;
     display: flex;
     padding: 1rem;
+    margin: 1rem 0;
     align-items: center;
-    align-self: center;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 .post-item-older>img {
@@ -157,4 +161,33 @@ body {
     align-self: flex-end;
     width: 6rem;
     height: 3rem;
+}
+
+.register-container{
+    z-index: 3;
+    position:fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    background-color: rgba(0,0,0,0.3);
+}
+
+.register-form{
+    display:flex;
+    flex-direction: column;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid white;
+    background-color: antiquewhite;
+    padding: 1rem;
+    width: 600px;
+    height: 300px;
+}
+
+.register-form>*{
+    max-width: 200px;
 }

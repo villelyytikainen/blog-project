@@ -1,232 +1,318 @@
-const router = async () => {
-    const routes = [
-        { path: '/', view: () => console.log('dash') },
-        { path: '/posts', view: () => console.log('posts') },
-        { path: '/settings', view: () => console.log('settings') }
-    ]
+// const router = async () => {
+//     const routes = [
+//         { path: '/', view: () => console.log('dash') },
+//         { path: '/posts', view: () => console.log('posts') },
+//         { path: '/settings', view: () => console.log('settings') }
+//     ]
 
-    //test each rroute for potential match
-    const potentialMatch = routes.map(route => {
-        return {
-            route: route,
-            isMatch: location.pathname === route.path
-        }
-    })
+//     //test each rroute for potential match
+//     const potentialMatch = routes.map(route => {
+//         return {
+//             route: route,
+//             isMatch: location.pathname === route.path
+//         }
+//     })
 
-    let match = potentialMatch.find(potentialMatch => potentialMatch.isMatch);
+//     let match = potentialMatch.find(potentialMatch => potentialMatch.isMatch);
 
-    if (!match) {
-        match = {
-            route: routes[0],
-            isMatch: true,
-        }
-    }
+//     if (!match) {
+//         match = {
+//             route: routes[0],
+//             isMatch: true,
+//         }
+//     }
 
-    console.log(potentialMatch)
-}
+//     console.log(potentialMatch)
+// }
 
-document.addEventListener('DOMContentLoaded', () => router())
+//document.addEventListener('DOMContentLoaded', () => router())
+import api from './modules/api.js'
 
-const olderPostsList = document.querySelector('.older-posts');
-const latestPosts = document.querySelector('.latest-posts')
-const mainContainer = document.querySelector('.main-content')
-const navBarBtnContainer = document.querySelector('.nav-buttons')
-const maxOlderPosts = 5
-const maxPreviewTextLength = 30
-let userLoggedIn = true;
+const {
+    createUser,
+    getUsers,
+    getUserById,
+    getPosts,
+    createPost,
+    updatePost
+} = api
 
-const renderNavButtons = () => {
+//Render buttons in the navigation bar
+const renderNavButtons = async () => {
+    const mainContainer = document.querySelector('.main-content')
+    const navBarBtnContainer = document.querySelector('.nav-buttons')
+    let userLoggedIn = true;
     if (userLoggedIn) {
-        const addNewPost = document.createElement('button')
-        addNewPost.classList.add('new-post-button')
-        addNewPost.textContent = 'Add New'
+        const addNewPost = document.createElement('button');
+        const maxOlderPosts = 5
+        const maxPreviewTextLength = 30
+        addNewPost.classList.add('new-post-button');
+        addNewPost.textContent = 'Add New';
 
-        addNewPost.addEventListener('click', renderModal)
+        addNewPost.addEventListener('click', renderModal);
+        navBarBtnContainer.appendChild(addNewPost);
 
-        navBarBtnContainer.appendChild(addNewPost)
-    }
-    else {
+        const posts = await getPosts();
+        if (posts.length < 1) {
+            const noPostsText = document.createElement('h1');
+            noPostsText.textContent = 'No posts yet';
+            mainContainer.appendChild(noPostsText);
+        } else {
+            const sortedPosts = posts
+                .sort((postA, postB) => Date.parse(postB.createdAt) - Date.parse(postA.createdAt))
+                .slice(0, maxOlderPosts);
+            sortedPosts.forEach(post => renderPost(post, maxPreviewTextLength));
+        }
+    } else {
         const buttons = document.createElement('div')
+
         const loginButton = document.createElement('button')
         loginButton.classList.add('login-button')
         loginButton.textContent = 'Login'
+
+        const pleaseLogin = document.createElement('h1')
+        pleaseLogin.textContent = 'Please login'
+
         const registerButton = document.createElement('button')
         registerButton.classList.add('register-button')
         registerButton.textContent = 'Register'
 
+        registerButton.addEventListener('click', renderModal)
+        loginButton.addEventListener('click', renderModal)
+
         buttons.append(loginButton, registerButton)
         navBarBtnContainer.appendChild(buttons)
+        mainContainer.appendChild(pleaseLogin)
     }
+};
+
+//Render particular modal depending on what button user presses
+const renderModal = (e) => {
+
+    const renderRegisterModal = () => {
+        const registerFormContainer = document.createElement('div')
+        registerFormContainer.classList.add('register-container')
+
+        const registerForm = document.createElement('form')
+        registerForm.classList.add('register-form')
+        registerFormContainer.appendChild(registerForm)
+
+        const registerHeader = document.createElement('h1')
+        registerHeader.textContent = 'Register'
+        registerForm.appendChild(registerHeader)
+
+        const usernameLabel = document.createElement('label')
+        usernameLabel.textContent = 'Username'
+        registerForm.appendChild(usernameLabel)
+
+        const usernameInput = document.createElement('input')
+        usernameInput.name = 'username'
+        registerForm.appendChild(usernameInput)
+
+        const passwordLabel = document.createElement('label')
+        passwordLabel.textContent = 'Password'
+        registerForm.appendChild(passwordLabel)
+
+        const passwordInput = document.createElement('input')
+        passwordInput.name = 'password'
+        passwordInput.type = 'password'
+        registerForm.appendChild(passwordInput)
+
+        const emailLabel = document.createElement('label')
+        emailLabel.textContent = 'Email'
+        registerForm.appendChild(emailLabel)
+
+        const emailInput = document.createElement('input')
+        emailInput.name = 'email'
+        emailInput.type = 'email'
+        registerForm.appendChild(emailInput)
+
+        const submitRegisterForm = document.createElement('button')
+        submitRegisterForm.textContent = 'Register'
+
+        registerForm.appendChild(submitRegisterForm)
+        mainContainer.appendChild(registerFormContainer)
+
+        registerForm.addEventListener('submit', async (event) => {
+            event.preventDefault()
+            const formData = new FormData(event.target)
+            const data = Object.fromEntries(formData.entries())
+            createUser(data)
+        })
+    };
+
+    const renderNewPostModal = (e) => {
+
+        const modalContainer = document.createElement("div");
+        const modalForm = document.createElement("form");
+        const body = document.body;
+
+        modalForm.setAttribute("class", "modal-form");
+        modalContainer.setAttribute("class", "modal-container");
+
+        const titleLabel = document.createElement("label");
+        titleLabel.textContent = "Title";
+
+        const title = document.createElement("input");
+        title.setAttribute("name", "title");
+        title.required = true;
+
+        const imageLabel = document.createElement("label");
+        imageLabel.textContent = "Image";
+
+        const image = document.createElement("input");
+        image.setAttribute("name", "image");
+        image.required = true;
+
+        const contentLabel = document.createElement("label");
+        contentLabel.textContent = "Content";
+
+        const content = document.createElement("textarea");
+        content.setAttribute("name", "content");
+        content.classList.add("modal-content");
+        content.required = true;
+
+        const submit = document.createElement("button");
+        submit.textContent = "Submit";
+        submit.classList.add("modal-submit-btn");
+
+        modalForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const item = Object.fromEntries(formData.entries());
+            createPost(item).then((data) => renderPost(data));
+        });
+
+        modalForm.append(
+            titleLabel,
+            title,
+            imageLabel,
+            image,
+            contentLabel,
+            content,
+            submit
+        );
+
+        modalContainer.appendChild(modalForm);
+        body.appendChild(modalContainer);
+
+        modalContainer.addEventListener("click", (e) => {
+            if (modalContainer !== e.target) return;
+            body.removeChild(modalContainer);
+        });
+    };
+
+    switch (e.target.className) {
+        case 'register-button':
+            console.log('register')
+            renderRegisterModal()
+            break;
+        case 'login-button':
+            console.log('login')
+            renderLoginModal()
+            break;
+        case 'new-post-button':
+            console.log('add new')
+            renderNewPostModal()
+            break;
+    }
+};
+
+//Update post item into edit mode
+const editItem = (element, post, event) => {
+    console.log(post)
+    const itemTitle = element.children[0]
+    const itemContent = element.children[1].nodeName.toLowerCase() === 'p' ? event.target.parentNode.parentNode.children[1] : null
+    const itemImage = element.children[2]
+    const editButton = event.target
+
+    const titleInput = document.createElement('input')
+    titleInput.value = itemTitle.textContent
+
+    const contentInput = document.createElement('input')
+    contentInput.value = itemContent.textContent
+
+    const imageInput = document.createElement('input')
+    imageInput.value = itemImage.textContent
+
+    const saveButton = document.createElement('button')
+    saveButton.textContent = 'Save'
+
+    console.log(event.target.parentNode.parentNode)
+
+    itemTitle.replaceWith(titleInput)
+    itemContent.replaceWith(contentInput)
+    itemImage.replaceWith(imageInput)
+    editButton.replaceWith(saveButton)
+
+
+    const saveItem = async (event) => {
+        const modifiedItem = {
+            title: titleInput.value,
+            content: contentInput.value,
+            imageSrc: imageInput.value
+        }
+
+        updatePost(modifiedItem, post)
+
+        itemTitle.textContent = modifiedItem.title
+        itemContent.textContent = modifiedItem.content
+        itemImage.textContent = modifiedItem.imageSrc
+
+        saveButton.replaceWith(editButton)
+        titleInput.replaceWith(itemTitle)
+        contentInput.replaceWith(itemContent)
+        imageInput.replaceWith(itemImage)
+
+    }
+
+    saveButton.addEventListener('click', saveItem)
 }
 
-const getPosts = async () => {
-    const response = await fetch('/api/posts')
-    const data = await response.json()
-    const posts = data.data
-
-    return posts
-}
-
-const renderPost = (post) => {
+//Render posts
+const renderPost = (post, maxPreviewTextLength) => {
+    const olderPostsList = document.querySelector('.older-posts');
+    const latestPosts = document.querySelector('.latest-posts')
     const item = document.createElement('li')
     item.classList.add('post-item')
+
     const itemTitle = document.createElement('h2')
     itemTitle.classList.add('post-item-title')
     itemTitle.textContent = post.title
+
     const itemBody = document.createElement('p')
     itemBody.classList.add('post-item-body')
     itemBody.textContent = post.content.length <= maxPreviewTextLength ? post.content : `${post.content.slice(0, maxPreviewTextLength)}...`
+
     const itemImg = document.createElement('img')
     itemImg.classList.add('post-item-img')
     itemImg.src = post.image
+
     const buttonContainer = document.createElement('div')
     const editBtn = document.createElement('button')
     editBtn.textContent = 'Edit'
+
     const deleteBtn = document.createElement('button')
     deleteBtn.textContent = 'Delete'
 
-    let editMode = false;
-
     buttonContainer.append(editBtn, deleteBtn)
-    item.append(itemTitle, itemBody, buttonContainer)
+    item.append(itemTitle, itemBody, itemImg, buttonContainer)
 
-    const toggleEditMode = () => {
-        const titleInput = document.createElement('input')
-        const bodyInput = document.createElement('input')
-        const imageInput = document.createElement('input')
-        editMode = !editMode
-
-        console.log(editMode)
-        if (editMode) {
-            itemTitle.replaceWith(titleInput)
-            itemBody.replaceWith(bodyInput)
-            itemImg.replaceWith(imageInput)
-        }
-        else if(!editMode){
-            itemTitle.textContent = titleInput.value
-            itemBody.textContent = bodyInput.value
-            itemImg.textContent = imageInput.value
-            console.log(itemTitle)
-            titleInput.replaceWith(itemTitle)
-            bodyInput.replaceWith(itemBody)
-            imageInput.replaceWith(itemImg)
-        }
-    }
-
-    editBtn.addEventListener('click', async (event) => {
-        const editedItem = {
-            title: itemTitle.textContent,
-            body: itemBody.textContent,
-            image: itemImg.textContent,
-        }
-
-        //edit the card
-        //send edited content to the server
-
-        toggleEditMode()
-    })
-    deleteBtn.addEventListener('click', async (event) => {
-        item.remove()
-        await fetch(`/api/posts/${post._id}`, {
-            method: 'DELETE'
-        })
-    })
+    editBtn.addEventListener('click', (event) => editItem(item, post, event))
+    deleteBtn.addEventListener('click', (event) => deleteItem(item, post, event))
 
     if (latestPosts.children.length < 4) {
-        console.log('render latest')
         latestPosts.appendChild(item)
     }
-    if (latestPosts.children.length >= 4 && olderPostsList.children.length < maxOlderPosts) {
-        console.log('render older')
+    else {
         const olderItem = document.createElement('li')
-        olderItem.append(itemTitle)
+        olderItem.append(itemTitle, itemBody)
         olderItem.setAttribute('class', 'post-item-older')
         olderPostsList.appendChild(olderItem)
     }
-    // else if (olderPostsList.children.length >= maxOlderPosts && !olderPostsList.children[maxOlderPosts]) {
-    //     const moreButton = document.createElement('button')
-    //     moreButton.textContent = 'Show more'
-    //     moreButton.setAttribute('class', 'show-more-button')
-    //     olderPostsList.appendChild(moreButton)
-    // }
-}
-
-const renderModal = (e) => {
-    const modalContainer = document.createElement('div')
-    const modalForm = document.createElement('form')
-    const body = document.body
-
-    modalForm.setAttribute('class', 'modal-form')
-    modalContainer.setAttribute('class', 'modal-container')
-    e.preventDefault()
-
-    const addPostFormContent = {
-        'titleLabel': document.createElement('label'),
-        'title': document.createElement('input'),
-        'imageLabel': document.createElement('label'),
-        'image': document.createElement('input'),
-        'contentLabel': document.createElement('label'),
-        'content': document.createElement('textarea'),
-        'submit': document.createElement('button')
-    }
-
-    addPostFormContent.titleLabel.textContent = 'Title';
-    addPostFormContent.title.setAttribute('name', 'title');
-    addPostFormContent.title.required = true
-    addPostFormContent.imageLabel.textContent = 'Image';
-    addPostFormContent.image.setAttribute('name', 'image');
-    addPostFormContent.image.required = true
-    addPostFormContent.contentLabel.textContent = 'Content';
-    addPostFormContent.content.setAttribute('name', 'content');
-    addPostFormContent.content.classList.add('modal-content')
-    addPostFormContent.content.required = true
-    addPostFormContent.submit.textContent = 'Submit';
-    addPostFormContent.submit.classList.add('modal-submit-btn')
-
-
-    modalForm.addEventListener('submit', async (e) => {
-        e.preventDefault()
-        const formData = new FormData(e.target)
-        console.log('frontend', Object.fromEntries(formData.entries()))
-        await fetch('/api/posts', {
-            method: 'POST',
-            body: JSON.stringify(Object.fromEntries(formData.entries())),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-
-        renderPost(Object.fromEntries(formData.entries()))
-    })
-
-    Object.values(addPostFormContent).forEach(element => {
-        modalForm.appendChild(element)
-    })
-
-    modalContainer.appendChild(modalForm)
-
-    body.appendChild(modalContainer)
-    modalContainer.addEventListener('click', (e) => {
-        if (modalContainer !== e.target) return
-        body.removeChild(modalContainer)
-    })
 }
 
 renderNavButtons()
-getPosts().then(posts => {
-    if (posts.length < 1) {
-        const noPostsText = document.createElement('h1')
-        noPostsText.textContent = 'No posts yet'
-        mainContainer.appendChild(noPostsText)
-    }
-    else {
-        const sortedPosts = posts.sort((postA, postB) => Date.parse(postB.createdAt) - Date.parse(postA.createdAt))
-        console.log(sortedPosts)
-        sortedPosts.forEach(post => {
-            console.log(post)
-            renderPost(post)
-        })
-    }
-})
+
 
 
