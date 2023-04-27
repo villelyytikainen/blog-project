@@ -1,32 +1,5 @@
-// const router = async () => {
-//     const routes = [
-//         { path: '/', view: () => console.log('dash') },
-//         { path: '/posts', view: () => console.log('posts') },
-//         { path: '/settings', view: () => console.log('settings') }
-//     ]
-
-//     //test each rroute for potential match
-//     const potentialMatch = routes.map(route => {
-//         return {
-//             route: route,
-//             isMatch: location.pathname === route.path
-//         }
-//     })
-
-//     let match = potentialMatch.find(potentialMatch => potentialMatch.isMatch);
-
-//     if (!match) {
-//         match = {
-//             route: routes[0],
-//             isMatch: true,
-//         }
-//     }
-
-//     console.log(potentialMatch)
-// }
-
-//document.addEventListener('DOMContentLoaded', () => router())
 import api from './modules/api.js'
+import utils from './modules/utils.js'
 
 const {
     createUser,
@@ -35,13 +8,15 @@ const {
     getPosts,
     createPost,
     updatePost
-} = api
+} = api;
+
+const { createForm } = utils;
+const mainContainer = document.querySelector('.main-content')
 
 //Render buttons in the navigation bar
 const renderNavButtons = async () => {
-    const mainContainer = document.querySelector('.main-content')
     const navBarBtnContainer = document.querySelector('.nav-buttons')
-    let userLoggedIn = true;
+    let userLoggedIn = false;
     if (userLoggedIn) {
         const addNewPost = document.createElement('button');
         const maxOlderPosts = 5
@@ -86,121 +61,96 @@ const renderNavButtons = async () => {
     }
 };
 
+//Render login modal using the utility function 'CreateForm'
+const renderLoginModal = () => {
+    const fields = [
+        { label: 'Username', name: 'username' },
+        { label: 'Password', name: 'password', type: 'password' },
+    ];
+
+    const loginForm = createForm('Login', fields, 'Login', (data) => {
+        // login user
+    });
+
+    mainContainer.appendChild(loginForm);
+};
+
+//Render register modal using the utility function 'CreateForm'
+const renderRegisterModal = () => {
+    const fields = [
+        { label: 'Username', name: 'username' },
+        { label: 'Password', name: 'password', type: 'password' },
+        { label: 'Email', name: 'email', type: 'email' },
+    ];
+
+    const registerForm = createForm('Register', fields, 'Register', createUser);
+
+    mainContainer.appendChild(registerForm);
+};
+
+const renderNewPostModal = (e) => {
+
+    const modalContainer = document.createElement("div");
+    const modalForm = document.createElement("form");
+    const body = document.body;
+
+    modalForm.setAttribute("class", "modal-form");
+    modalContainer.setAttribute("class", "modal-container");
+
+    const titleLabel = document.createElement("label");
+    titleLabel.textContent = "Title";
+
+    const title = document.createElement("input");
+    title.setAttribute("name", "title");
+    title.required = true;
+
+    const imageLabel = document.createElement("label");
+    imageLabel.textContent = "Image";
+
+    const image = document.createElement("input");
+    image.setAttribute("name", "image");
+    image.required = true;
+
+    const contentLabel = document.createElement("label");
+    contentLabel.textContent = "Content";
+
+    const content = document.createElement("textarea");
+    content.setAttribute("name", "content");
+    content.classList.add("modal-content");
+    content.required = true;
+
+    const submit = document.createElement("button");
+    submit.textContent = "Submit";
+    submit.classList.add("modal-submit-btn");
+
+    modalForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const item = Object.fromEntries(formData.entries());
+        createPost(item).then((data) => renderPost(data));
+    });
+
+    modalForm.append(
+        titleLabel,
+        title,
+        imageLabel,
+        image,
+        contentLabel,
+        content,
+        submit
+    );
+
+    modalContainer.appendChild(modalForm);
+    body.appendChild(modalContainer);
+
+    modalContainer.addEventListener("click", (e) => {
+        if (modalContainer !== e.target) return;
+        body.removeChild(modalContainer);
+    });
+};
+
 //Render particular modal depending on what button user presses
 const renderModal = (e) => {
-
-    const renderRegisterModal = () => {
-        const registerFormContainer = document.createElement('div')
-        registerFormContainer.classList.add('register-container')
-
-        const registerForm = document.createElement('form')
-        registerForm.classList.add('register-form')
-        registerFormContainer.appendChild(registerForm)
-
-        const registerHeader = document.createElement('h1')
-        registerHeader.textContent = 'Register'
-        registerForm.appendChild(registerHeader)
-
-        const usernameLabel = document.createElement('label')
-        usernameLabel.textContent = 'Username'
-        registerForm.appendChild(usernameLabel)
-
-        const usernameInput = document.createElement('input')
-        usernameInput.name = 'username'
-        registerForm.appendChild(usernameInput)
-
-        const passwordLabel = document.createElement('label')
-        passwordLabel.textContent = 'Password'
-        registerForm.appendChild(passwordLabel)
-
-        const passwordInput = document.createElement('input')
-        passwordInput.name = 'password'
-        passwordInput.type = 'password'
-        registerForm.appendChild(passwordInput)
-
-        const emailLabel = document.createElement('label')
-        emailLabel.textContent = 'Email'
-        registerForm.appendChild(emailLabel)
-
-        const emailInput = document.createElement('input')
-        emailInput.name = 'email'
-        emailInput.type = 'email'
-        registerForm.appendChild(emailInput)
-
-        const submitRegisterForm = document.createElement('button')
-        submitRegisterForm.textContent = 'Register'
-
-        registerForm.appendChild(submitRegisterForm)
-        mainContainer.appendChild(registerFormContainer)
-
-        registerForm.addEventListener('submit', async (event) => {
-            event.preventDefault()
-            const formData = new FormData(event.target)
-            const data = Object.fromEntries(formData.entries())
-            createUser(data)
-        })
-    };
-
-    const renderNewPostModal = (e) => {
-
-        const modalContainer = document.createElement("div");
-        const modalForm = document.createElement("form");
-        const body = document.body;
-
-        modalForm.setAttribute("class", "modal-form");
-        modalContainer.setAttribute("class", "modal-container");
-
-        const titleLabel = document.createElement("label");
-        titleLabel.textContent = "Title";
-
-        const title = document.createElement("input");
-        title.setAttribute("name", "title");
-        title.required = true;
-
-        const imageLabel = document.createElement("label");
-        imageLabel.textContent = "Image";
-
-        const image = document.createElement("input");
-        image.setAttribute("name", "image");
-        image.required = true;
-
-        const contentLabel = document.createElement("label");
-        contentLabel.textContent = "Content";
-
-        const content = document.createElement("textarea");
-        content.setAttribute("name", "content");
-        content.classList.add("modal-content");
-        content.required = true;
-
-        const submit = document.createElement("button");
-        submit.textContent = "Submit";
-        submit.classList.add("modal-submit-btn");
-
-        modalForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const item = Object.fromEntries(formData.entries());
-            createPost(item).then((data) => renderPost(data));
-        });
-
-        modalForm.append(
-            titleLabel,
-            title,
-            imageLabel,
-            image,
-            contentLabel,
-            content,
-            submit
-        );
-
-        modalContainer.appendChild(modalForm);
-        body.appendChild(modalContainer);
-
-        modalContainer.addEventListener("click", (e) => {
-            if (modalContainer !== e.target) return;
-            body.removeChild(modalContainer);
-        });
-    };
 
     switch (e.target.className) {
         case 'register-button':
@@ -312,7 +262,10 @@ const renderPost = (post, maxPreviewTextLength) => {
     }
 }
 
-renderNavButtons()
+document.addEventListener('DOMContentLoaded', () => {
+
+    renderNavButtons()
+})
 
 
 
