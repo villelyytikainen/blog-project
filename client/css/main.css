@@ -25,6 +25,19 @@ body {
     display: flex;
     height: 2rem;
     margin: 0;
+    width: 100%;
+    justify-content: center;
+}
+
+.navigation-buttons{
+    display: flex;
+    justify-content: space-around;
+    width: 8%;
+}
+
+.navigation-buttons > *{
+    width: 5rem;
+    height: 2rem;
 }
 
 .nav-bar>.buttons {}
@@ -34,6 +47,7 @@ body {
     width: 5rem;
     background-color: rgba(255, 255, 255, 0.8);
     border: 1px solid rgba(0, 0, 0, 0.5);
+
 }
 
 .nav-bar>.nav-buttons>button:hover {
@@ -131,6 +145,7 @@ body {
 .modal-container {
     position: absolute;
     top: 0;
+    left: 0;
     z-index: 5;
     width: 100vw;
     height: 100vh;
@@ -151,6 +166,16 @@ body {
     gap: 10px;
 }
 
+.username-input, .password-input, .email-input{
+    width: 15rem;
+    align-self: center;
+}
+
+.submit-button{
+    width: 5rem;
+    align-self: center;
+}
+
 .modal-content {
     height: 300px;
     width: 100%;
@@ -161,33 +186,4 @@ body {
     align-self: flex-end;
     width: 6rem;
     height: 3rem;
-}
-
-.register-container{
-    z-index: 3;
-    position:fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    background-color: rgba(0,0,0,0.3);
-}
-
-.register-form{
-    display:flex;
-    flex-direction: column;
-    margin: auto;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid white;
-    background-color: antiquewhite;
-    padding: 1rem;
-    width: 600px;
-    height: 300px;
-}
-
-.register-form>*{
-    max-width: 200px;
 }

@@ -6,6 +6,7 @@ const userSchema = new Schema({
     username: {
         type: String,
         require: true,
+        unique: true,
     },
     password: {
         type: String,
@@ -25,13 +26,16 @@ const userSchema = new Schema({
 
 userSchema.pre('save', async function (next) {
     try {
+        if (!this.isModified('password')) {
+            return next();
+          }
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = bcrypt.hash(this.password, salt)
         this.password = hashedPassword
         next()
     } catch (err) {
         console.error(err)
-        next(err)
+        return next(err)
     }
 })
 

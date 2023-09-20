@@ -5,6 +5,7 @@ const postSchema = new Schema({
     title: String,
     image: String,
     content: String,
+    userId: String,
     createdAt: {
         type: Date,
         default: Date.now,

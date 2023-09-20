@@ -3,17 +3,20 @@ import utils from './modules/utils.js'
 
 const {
     createUser,
+    loginUser,
+    getLoggedStatus,
     getUsers,
     getUserById,
     getPosts,
     createPost,
-    updatePost
+    updatePost,
+    deletePost
 } = api;
 
 const { createForm } = utils;
 const mainContainer = document.querySelector('.main-content')
 
-//Render buttons in the navigation bar
+//Render buttons in the navigation bar depending on if the user is logged in or logged out
 const renderNavButtons = async () => {
     const navBarBtnContainer = document.querySelector('.nav-buttons')
     let userLoggedIn = false;
@@ -40,6 +43,7 @@ const renderNavButtons = async () => {
         }
     } else {
         const buttons = document.createElement('div')
+        buttons.classList.add('navigation-buttons')
 
         const loginButton = document.createElement('button')
         loginButton.classList.add('login-button')
@@ -67,12 +71,8 @@ const renderLoginModal = () => {
         { label: 'Username', name: 'username' },
         { label: 'Password', name: 'password', type: 'password' },
     ];
-
-    const loginForm = createForm('Login', fields, 'Login', (data) => {
-        // login user
-    });
-
-    mainContainer.appendChild(loginForm);
+    //Title, input fields, submit button text, the desired function
+    createForm('Login', fields, 'Login', loginUser);
 };
 
 //Render register modal using the utility function 'CreateForm'
@@ -82,71 +82,21 @@ const renderRegisterModal = () => {
         { label: 'Password', name: 'password', type: 'password' },
         { label: 'Email', name: 'email', type: 'email' },
     ];
-
-    const registerForm = createForm('Register', fields, 'Register', createUser);
-
-    mainContainer.appendChild(registerForm);
+    //Title, input fields, submit button text, the desired function
+    createForm('Register', fields, 'Register', createUser);
 };
 
+//Render new post modal using the utility function 'CreateForm'
 const renderNewPostModal = (e) => {
 
-    const modalContainer = document.createElement("div");
-    const modalForm = document.createElement("form");
-    const body = document.body;
+    const fields = [
+        { label: 'Title', name: 'title', required: true },
+        { label: 'Image', name: 'image', type: 'url' },
+        { label: 'Content', name: 'content', class: 'modal-content', required: true }
+    ]
 
-    modalForm.setAttribute("class", "modal-form");
-    modalContainer.setAttribute("class", "modal-container");
-
-    const titleLabel = document.createElement("label");
-    titleLabel.textContent = "Title";
-
-    const title = document.createElement("input");
-    title.setAttribute("name", "title");
-    title.required = true;
-
-    const imageLabel = document.createElement("label");
-    imageLabel.textContent = "Image";
-
-    const image = document.createElement("input");
-    image.setAttribute("name", "image");
-    image.required = true;
-
-    const contentLabel = document.createElement("label");
-    contentLabel.textContent = "Content";
-
-    const content = document.createElement("textarea");
-    content.setAttribute("name", "content");
-    content.classList.add("modal-content");
-    content.required = true;
-
-    const submit = document.createElement("button");
-    submit.textContent = "Submit";
-    submit.classList.add("modal-submit-btn");
-
-    modalForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        const item = Object.fromEntries(formData.entries());
-        createPost(item).then((data) => renderPost(data));
-    });
-
-    modalForm.append(
-        titleLabel,
-        title,
-        imageLabel,
-        image,
-        contentLabel,
-        content,
-        submit
-    );
-
-    modalContainer.appendChild(modalForm);
-    body.appendChild(modalContainer);
-
-    modalContainer.addEventListener("click", (e) => {
-        if (modalContainer !== e.target) return;
-        body.removeChild(modalContainer);
-    });
+    //Title, input fields, submit button text, the desired function
+    createForm('Add new post', fields, 'Submit', createPost);
 };
 
 //Render particular modal depending on what button user presses
@@ -169,7 +119,7 @@ const renderModal = (e) => {
 };
 
 //Update post item into edit mode
-const editItem = (element, post, event) => {
+const editPost = (element, post, event) => {
     console.log(post)
     const itemTitle = element.children[0]
     const itemContent = element.children[1].nodeName.toLowerCase() === 'p' ? event.target.parentNode.parentNode.children[1] : null
@@ -196,7 +146,7 @@ const editItem = (element, post, event) => {
     editButton.replaceWith(saveButton)
 
 
-    const saveItem = async (event) => {
+    const savePost = async (event) => {
         const modifiedItem = {
             title: titleInput.value,
             content: contentInput.value,
@@ -216,7 +166,7 @@ const editItem = (element, post, event) => {
 
     }
 
-    saveButton.addEventListener('click', saveItem)
+    saveButton.addEventListener('click', savePost)
 }
 
 //Render posts
@@ -248,8 +198,8 @@ const renderPost = (post, maxPreviewTextLength) => {
     buttonContainer.append(editBtn, deleteBtn)
     item.append(itemTitle, itemBody, itemImg, buttonContainer)
 
-    editBtn.addEventListener('click', (event) => editItem(item, post, event))
-    deleteBtn.addEventListener('click', (event) => deleteItem(item, post, event))
+    editBtn.addEventListener('click', (event) => editPost(item, post, event))
+    deleteBtn.addEventListener('click', (event) => deletePost(item, post, event))
 
     if (latestPosts.children.length < 4) {
         latestPosts.appendChild(item)
@@ -263,7 +213,6 @@ const renderPost = (post, maxPreviewTextLength) => {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-
     renderNavButtons()
 })
 

@@ -1,6 +1,7 @@
 const postService = require('../services/BlogService')
+const authMiddleware = require('../services/authMiddleware')
 
-exports.getAllPosts = async (req, res) => {
+exports.getAllPosts = authMiddleware, async (req, res) => {
     try {
         const posts = await postService.getAllPosts()
         res.json({ data: posts, status: 'success' })
@@ -9,7 +10,7 @@ exports.getAllPosts = async (req, res) => {
     }
 };
 
-exports.createPost = async (req, res) => {
+exports.createPost = authMiddleware, async (req, res) => {
     try {
         const post = await postService.createPost(req.body)
         res.json({ data: post, status: 'success' })
@@ -18,7 +19,7 @@ exports.createPost = async (req, res) => {
     }
 };
 
-exports.getPostById = async (req, res) => {
+exports.getPostById = authMiddleware, async (req, res) => {
     try {
         const post = await postService.getPostById(req.params.id);
         res.json({ data: post, status: "success" });
@@ -27,7 +28,7 @@ exports.getPostById = async (req, res) => {
     }
 };
 
-exports.updatePost = async (req, res) => {
+exports.updatePost = authMiddleware, async (req, res) => {
     try {
         const post = await postService.updatePost(req.params.id, req.body);
         res.json({ data: post, status: "success" });
@@ -36,7 +37,7 @@ exports.updatePost = async (req, res) => {
     }
 };
 
-exports.deletePost = async (req, res) => {
+exports.deletePost = authMiddleware, async (req, res) => {
     try {
         const post = await postService.deletePost(req.params.id);
         res.json({ data: post, status: "success" });
