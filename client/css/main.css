@@ -31,16 +31,15 @@ body {
 
 .navigation-buttons{
     display: flex;
-    justify-content: space-around;
-    width: 8%;
+    width: 100%;
+    justify-content: center;
+    gap: 10px;
 }
 
 .navigation-buttons > *{
     width: 5rem;
     height: 2rem;
 }
-
-.nav-bar>.buttons {}
 
 .nav-bar>.nav-buttons>button,
 .show-more-button {
@@ -55,6 +54,14 @@ body {
     background-color: rgba(255, 255, 255, 1);
     border: 1px solid rgba(0, 0, 0, 1);
     transition-duration: 0.2s;
+}
+
+.add-new-button{
+    margin: 0 0 0 auto;
+}
+
+.logout-button{
+    margin: 0 2rem 0 auto;
 }
 
 .main-content {

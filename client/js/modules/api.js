@@ -26,14 +26,13 @@ const loginUser = async (user) => {
         });
         const data = await response.json();
         if (data.hasOwnProperty('token')) {
-            console.log(data)
-            console.log(`${data.username} logged in`);
             localStorage.setItem("token", data.token)
-            getPosts()
         }
         else {
             console.error(data.message)
         }
+
+        return data
     } catch (err) {
         console.error(err)
     }
@@ -55,7 +54,6 @@ const getUserById = async (id) => {
 
 // Get all posts
 const getPosts = async () => {
-    console.log('get all posts', localStorage.getItem('token'))
     const response = await fetch('/api/posts',{
         method: 'GET',
         headers: {

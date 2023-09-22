@@ -45,7 +45,7 @@ const createForm = (title, fields, submitText, onSubmit) => {
         event.preventDefault();
         const formData = new FormData(event.target);
         const data = Object.fromEntries(formData.entries());
-        onSubmit(data);
+        await onSubmit(data);
         mainContainer.removeChild(formContainer);
     });
 
