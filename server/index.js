@@ -25,7 +25,6 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use('/api/users', userRouter)
 app.use('/api/posts', postRouter)
-app.use('/api/login', userRouter)
 
 //openai.sendPrompt().then((req,res) => console.log(req.data.choices))
 

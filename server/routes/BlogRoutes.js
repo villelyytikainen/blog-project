@@ -1,3 +1,5 @@
+const authMiddleware = require('../middlewares/authMiddleware')
+
 const express = require('express')
 const {
     getAllPosts,
@@ -9,7 +11,7 @@ const {
 
 const router = express.Router()
 
-router.route('/').get(getAllPosts).post(createPost)
-router.route('/:id').get(getPostById).put(updatePost).delete(deletePost)
+router.route('/').get(authMiddleware, getAllPosts).post(createPost)
+router.route('/:id').get(authMiddleware, getPostById).put(updatePost).delete(deletePost)
 
 module.exports = router

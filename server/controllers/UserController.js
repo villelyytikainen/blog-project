@@ -1,4 +1,5 @@
 const userService = require('../services/UserService')
+const authMiddleware = require('../middlewares/authMiddleware')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 
