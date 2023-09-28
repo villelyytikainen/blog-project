@@ -1,8 +1,3 @@
-import uxRendering from './modules/uxRendering.js'
+import updatePage from "./components/updatePage.js";
 
-const { renderNavButtons } = uxRendering;
-document.addEventListener('DOMContentLoaded', renderNavButtons)
-
-
-
-
+document.addEventListener("DOMContentLoaded", async () => updatePage());

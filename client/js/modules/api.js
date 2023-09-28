@@ -2,45 +2,36 @@ const localStorage = window.localStorage;
 
 // Create a new user
 const createUser = async (user) => {
-    const response = await fetch('/api/users/register', {
-        method: 'POST',
+    const response = await fetch("/api/users/register", {
+        method: "POST",
         body: JSON.stringify(user),
-        headers: { 'Content-Type': 'application/json' }
+        headers: { "Content-Type": "application/json" },
     });
     const data = await response.json();
-    console.log(data)
     if (data.status === "success") {
-        console.log('user created successfully')
-    }
-    else {
-        console.error('Registration failed: ', data.message);
+        console.log(data, "user created successfully");
+    } else {
+        console.error("Registration failed: ", data.message);
     }
 };
 
 const loginUser = async (user) => {
     try {
-        const response = await fetch('/api/users/login', {
-            method: 'POST',
+        const response = await fetch("/api/users/login", {
+            method: "POST",
             body: JSON.stringify(user),
-            headers: { 'Content-Type': 'application/json' }
+            headers: { "Content-Type": "application/json" },
         });
         const data = await response.json();
-        if (data.hasOwnProperty('token')) {
-            localStorage.setItem("token", data.token)
-        }
-        else {
-            console.error(data.message)
-        }
-
-        return data
+        return data;
     } catch (err) {
-        console.error(err)
+        return err;
     }
-}
+};
 
 // Get all users
 const getUsers = async () => {
-    const response = await fetch('/api/users');
+    const response = await fetch("/api/users");
     const data = await response.json();
     console.log(data);
 };
@@ -54,12 +45,13 @@ const getUserById = async (id) => {
 
 // Get all posts
 const getPosts = async () => {
-    const response = await fetch('/api/posts',{
-        method: 'GET',
+    const user = JSON.parse(localStorage.getItem("user"));
+    const response = await fetch("/api/posts", {
+        method: "GET",
         headers: {
-            'Authorization': localStorage.getItem('token'),
-            'Content-Type': 'application/json'
-        }
+            Authorization: user.token,
+            "Content-Type": "application/json",
+        },
     });
     const data = await response.json();
     return data.data;
@@ -67,10 +59,10 @@ const getPosts = async () => {
 
 // Create a new post
 const createPost = async (item) => {
-    const response = await fetch('/api/posts', {
-        method: 'POST',
+    const response = await fetch("/api/posts", {
+        method: "POST",
         body: JSON.stringify(item),
-        headers: { 'Content-Type': 'application/json' }
+        headers: { "Content-Type": "application/json" },
     });
     const data = await response.json();
     return data.data;
@@ -79,9 +71,9 @@ const createPost = async (item) => {
 // Update a post
 const updatePost = async (item, post) => {
     await fetch(`/api/posts/${post._id}`, {
-        method: 'PUT',
+        method: "PUT",
         body: JSON.stringify(item),
-        headers: { 'Content-Type': 'application/json' }
+        headers: { "Content-Type": "application/json" },
     });
 };
 
@@ -89,7 +81,7 @@ const updatePost = async (item, post) => {
 const deletePost = async (element, post, event) => {
     element.remove();
     const response = await fetch(`/api/posts/${post._id}`, {
-        method: 'DELETE'
+        method: "DELETE",
     });
     const data = await response.json();
     console.log(data);
@@ -103,5 +95,5 @@ export default {
     getPosts,
     createPost,
     updatePost,
-    deletePost
-}
+    deletePost,
+};

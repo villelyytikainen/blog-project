@@ -11,7 +11,7 @@ const {
 
 const router = express.Router()
 
-router.route('/').get(authMiddleware, getAllPosts).post(createPost)
-router.route('/:id').get(authMiddleware, getPostById).put(updatePost).delete(deletePost)
+router.route('/').all(authMiddleware).get(getAllPosts).post(createPost)
+router.route('/:id').all(authMiddleware).get(getPostById).put(updatePost).delete(deletePost)
 
 module.exports = router
