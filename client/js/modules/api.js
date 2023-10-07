@@ -2,17 +2,22 @@ const localStorage = window.localStorage;
 
 // Create a new user
 const createUser = async (user) => {
-    const response = await fetch("/api/users/register", {
-        method: "POST",
-        body: JSON.stringify(user),
-        headers: { "Content-Type": "application/json" },
-    });
-    const data = await response.json();
-    if (data.status === "success") {
-        console.log(data, "user created successfully");
-    } else {
-        console.error("Registration failed: ", data.message);
+    try{
+        const response = await fetch("/api/users/register", {
+            method: "POST",
+            body: JSON.stringify(user),
+            headers: { "Content-Type": "application/json" },
+        });
+        const data = await response.json();
+        return data;
+    }catch(err){
+        return err;
     }
+    // if (data.status === "success") {
+    //     console.log(data, "user created successfully");
+    // } else {
+    //     console.error("Registration failed: ", data.message);
+    // }
 };
 
 const loginUser = async (user) => {

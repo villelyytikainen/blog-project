@@ -8,7 +8,7 @@ body {
     padding: 0;
     font-size: 62, 5%;
     color: white;
-    background-color: #F0F0F0;
+    background-color: #f0f0f0;
 }
 
 .nav-bar {
@@ -21,7 +21,7 @@ body {
     justify-content: end;
 }
 
-.nav-buttons{
+.nav-buttons {
     display: flex;
     justify-content: end;
     padding: 0 2rem 0 2rem;
@@ -30,7 +30,18 @@ body {
 }
 
 .add-new-post-button{
-    margin-right: auto;
+    border: none;
+    border-radius: 0.2rem;
+    background-color: #f0f0f0;
+    color: #213555;
+    width: 5rem;
+    height: 2rem;
+    margin: auto;
+}
+
+.add-new-post-button:hover, .logout-link:hover{
+    cursor: pointer;
+    background-color: #e5d283;
 }
 
 .post-form {
@@ -47,13 +58,6 @@ a {
     color: white;
     text-decoration: none;
     cursor: pointer;
-}
-
-a:hover {
-    color: red;
-}
-
-img {
 }
 
 .main-content {
@@ -73,7 +77,7 @@ img {
     flex-direction: column;
     height: 100vh;
     width: 50vw;
-    background-color: #4F709C;
+    background-color: #4f709c;
     justify-content: center;
     align-items: center;
 }
@@ -110,18 +114,32 @@ img {
     color: cadetblue;
 }
 
-.show-more-button {
+.logout-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    border-radius: 0.2rem;
+    background-color: #f0f0f0;
+    color: #213555;
     width: 5rem;
-    background-color: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(0, 0, 0, 0.5);
+    height: 2rem;
 }
 
-.logout-button {
-    margin: 0 2rem 0 auto;
+.post-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #213555;
+    height: 400px;
+    width: 600px;
+    margin: auto;
+    gap: 10px;
 }
 
-.posts-container{
-    background-color: #4F709C;
+.posts-container {
+    background-color: #4f709c;
     height: 100vh;
     width: 100vw;
 }
@@ -136,7 +154,7 @@ img {
 }
 
 .post-item {
-    background-color: #E5D283;
+    background-color: #213555;
     border-radius: 1rem;
     padding: 1rem;
     min-height: 15rem;
@@ -146,14 +164,14 @@ img {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    color: black;
+    color: #f0f0f0;
 }
 
-.post-item > button{
+.post-item > button {
     border: none;
     border-radius: 0.2rem;
-    background-color: #213555;
-    color: #F0F0F0;
+    background-color: #e5d283;
+    color: #213555;
     width: 10rem;
     height: 4rem;
     margin: 0 0 0 auto;
@@ -181,7 +199,6 @@ img {
     justify-content: center;
     align-items: center;
     background-color: #213555;
-
     height: 400px;
     width: 600px;
     margin: auto;

@@ -2,20 +2,26 @@ import api from "../modules/api.js";
 import updatePage from "./updatePage.js";
 
 const renderPostModal = () => {
+    const mainContent = document.querySelector(".main-content");
     const modal = document.createElement("div");
     const user = JSON.parse(localStorage.getItem("user"));
-    modal.classList.add("post-modal-container");
+    modal.classList.add("modal-container");
     modal.innerHTML = `
             <form class="post-form">
-                <label for="title">Title</label>
-                <input name="title" type="text"></input>
-                <label for="image-url">Image</label>
-                <input name="content" type="Content"></input>
+                <h2>Add new post</h2>
+                <input name="title" type="text" placeholder="Title"></input>
+                <textarea name="content" placeholder="Content"></textarea>
                 <button type="submit" class="post-submit">Submit</button>
             </form>
     `;
 
-    document.body.appendChild(modal);
+    mainContent.appendChild(modal);
+
+    document.addEventListener("click", (e) => {
+        if (e.target === modal) {
+            mainContent.removeChild(modal);
+        }
+    });
 
     const postForm = document.querySelector(".post-form");
     postForm.addEventListener("submit", async (e) => {
@@ -27,6 +33,8 @@ const renderPostModal = () => {
             title: data.title,
             content: data.content,
         });
+
+        console.log(response);
 
         updatePage();
         e.target.remove();

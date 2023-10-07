@@ -29,12 +29,12 @@ exports.login = async (req, res) => {
         const { username, password } = req.body;
         const user = await userService.getUserByUsername(username);
         if (!user) {
-            return res.status(401).json({ message: "Authentication failed" });
+            return res.status(401).json({ message: "Authentication failed because no user" });
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return res.status(401).json({ message: "Authentication failed " });
+            return res.status(401).json({ message: "Authentication failed because wrong password" });
         }
 
         const token = jwt.sign(

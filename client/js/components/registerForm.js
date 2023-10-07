@@ -1,4 +1,5 @@
 import api from "../modules/api.js";
+import updatePage from "./updatePage.js";
 
 const renderRegisterForm = () => {
     const mainContent = document.querySelector(".main-content");
@@ -17,19 +18,24 @@ const renderRegisterForm = () => {
     `;
 
     mainContent.appendChild(formContainer);
-    //mainContent.appendChild(logo)
     const registerForm = document.querySelector(".register-form");
 
     registerForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
-        await api.createUser(data);
+        const response = await api.createUser(data);
+        const user = await response.data;
 
-        console.log(data);
+        console.log(user);
+        console.log(response);
 
-        if (data.status === "success") {
-            console.log("succ");
+        if (response.status === "success") {
+            console.log("reayd to login");
+            const loggedUser = await api.loginUser(data);
+            localStorage.setItem("user", JSON.stringify(loggedUser));
+            console.log(response);
+            updatePage();
         }
     });
 };
