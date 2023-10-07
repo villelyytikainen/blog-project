@@ -5,7 +5,10 @@ const postSchema = new Schema({
     title: String,
     image: String,
     content: String,
-    userId: String,
+    userId: {
+        type: String,
+        require: true
+    },
     createdAt: {
         type: Date,
         default: Date.now,

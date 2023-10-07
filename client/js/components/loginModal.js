@@ -7,10 +7,9 @@ const renderLoginModal = () => {
     modal.classList.add("modal-container");
     modal.innerHTML = `
             <form class="login-form">
-                <label for="username">Username</label>
-                <input name="username" type="text"></input>
-                <label for="password">Password</label>
-                <input name="password" type="password"></input>
+                <h2>Login</h2>
+                <input name="username" type="text" placeholder="Username"></input>
+                <input name="password" type="password" placeholder="Password"></input>
                 <button type="submit" class="login-submit">Log In</button>
             </form>
     `;
@@ -18,11 +17,19 @@ const renderLoginModal = () => {
     mainContent.appendChild(modal);
     const loginForm = document.querySelector(".login-form");
 
+    document.addEventListener("click", (e) => {
+        if (e.target === modal) {
+            mainContent.removeChild(modal);
+        }
+    });
+
     loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
         const user = await api.loginUser(data);
+
+        console.log(user);
         if (user.loggedIn) {
             localStorage.setItem("user", JSON.stringify(user));
         } else {

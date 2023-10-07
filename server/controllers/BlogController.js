@@ -12,7 +12,16 @@ exports.getAllPosts = async (req, res) => {
 exports.createPost = async (req, res) => {
     try {
         const post = await postService.createPost(req.body);
-        console.log(post)
+        res.json({ data: post, status: "success" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.getPostsByUserId = async (req, res) => {
+    console.log(req.headers)
+    try {
+        const post = await postService.getPostsByUserId(req.headers.userid);
         res.json({ data: post, status: "success" });
     } catch (err) {
         res.status(500).json({ error: err.message });

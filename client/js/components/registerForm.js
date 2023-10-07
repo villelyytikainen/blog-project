@@ -1,18 +1,23 @@
+import api from "../modules/api.js";
+
 const renderRegisterForm = () => {
     const mainContent = document.querySelector(".main-content");
+    const logo = document.createElement("img");
+    logo.src = "./img/logo.jpg";
     const formContainer = document.createElement("div");
     formContainer.classList.add("register-form-container");
     formContainer.innerHTML = `
+    <h1>Register</h1>
     <form class="register-form">
-        <label for="username">Username</label>
-        <input name="username" type="text" class="username-input">
-        <label for="password">Password</label>
-        <input name="password" type="password" class="password-input">
-        <button type="submit" class="submit-register">Submit</button>
+        <input name="username" type="text" placeholder="Username" class="username-input" required>
+        <input name="email" type="email" placeholder="Email" class="email-input" required>
+        <input name="password" type="password" placeholder="Password" class="password-input" required>
+        <button type="submit" class="submit-register">REGISTER</button>
     </form>
     `;
 
     mainContent.appendChild(formContainer);
+    //mainContent.appendChild(logo)
     const registerForm = document.querySelector(".register-form");
 
     registerForm.addEventListener("submit", async (e) => {
@@ -20,6 +25,12 @@ const renderRegisterForm = () => {
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
         await api.createUser(data);
+
+        console.log(data);
+
+        if (data.status === "success") {
+            console.log("succ");
+        }
     });
 };
 

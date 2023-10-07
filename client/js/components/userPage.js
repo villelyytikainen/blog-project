@@ -1,25 +1,24 @@
 import api from "../modules/api.js";
+import renderBlogPost from "./blogPost.js";
 
-const renderUserPage = async() => {
-    const mainContent = document.querySelector('.main-content');
-    const postsContainer = document.createElement('div');
-    postsContainer.innerHTML = await renderPosts()
+const renderUserPage = async (e) => {
+    const mainContent = document.querySelector(".main-content");
+    const postsContainer = document.createElement("section");
+    postsContainer.classList.add("posts-container");
 
+    const postsList = document.createElement("ul");
+    postsList.classList.add("posts-list");
+
+    postsContainer.appendChild(postsList);
     mainContent.appendChild(postsContainer);
-}
+
+    await renderPosts();
+};
 
 const renderPosts = async (e) => {
-    const posts = await api.getPosts();
+    const posts = await api.getPostsByUserId();
 
-    return `
-        <ul>
-            ${posts.map(post => {
-                return `
-                    <li>${post.title}</li>
-                `
-            })}
-        </ul>
-    `
+    return posts.map((post) => renderBlogPost(post));
 };
 
 export default renderUserPage;

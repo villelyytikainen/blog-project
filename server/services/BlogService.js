@@ -4,6 +4,10 @@ exports.getAllPosts = async () => {
     return await PostModel.find(); //.sort({_id:-1})
 };
 
+exports.getPostsByUserId = async (userId) => {
+    return await PostModel.find({userId});
+}
+
 exports.getPostById = async (id) => {
     return await PostModel.findById(id);
 };
