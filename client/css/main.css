@@ -140,8 +140,9 @@ a {
 
 .posts-container {
     background-color: #4f709c;
-    height: 100vh;
-    width: 100vw;
+    min-height: 100vh;
+    width: 80vw;
+    margin: auto;
 }
 
 .posts-list {

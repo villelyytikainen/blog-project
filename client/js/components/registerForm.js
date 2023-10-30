@@ -27,14 +27,8 @@ const renderRegisterForm = () => {
         const response = await api.createUser(data);
         const user = await response.data;
 
-        console.log(user);
-        console.log(response);
-
         if (response.status === "success") {
-            console.log("reayd to login");
-            const loggedUser = await api.loginUser(data);
-            localStorage.setItem("user", JSON.stringify(loggedUser));
-            console.log(response);
+            console.log("please verify your account");
             updatePage();
         }
     });

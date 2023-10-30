@@ -9,6 +9,7 @@ const createUser = async (user) => {
             headers: { "Content-Type": "application/json" },
         });
         const data = await response.json();
+        console.log(data)
         return data;
     }catch(err){
         return err;
@@ -20,6 +21,7 @@ const createUser = async (user) => {
     // }
 };
 
+// Log user in by sending the credentials
 const loginUser = async (user) => {
     try {
         const response = await fetch("/api/users/login", {
@@ -49,7 +51,8 @@ const getUserById = async (id) => {
 };
 
 const updateUser = async (user) => {
-    const response = await fetch(`/api/users/${user.id}`, {
+    console.log(user)
+    const response = await fetch(`/api/users/${user._id}`, {
         method: "PUT",
         body: JSON.stringify(user),
         header: {
@@ -57,6 +60,9 @@ const updateUser = async (user) => {
             "Content-Type": "application/json",
         },
     });
+
+    const data = response.json();
+    return data
 };
 
 // Get all posts

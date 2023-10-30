@@ -6,20 +6,19 @@ const renderBlogPost = (post) => {
     postItem.classList.add("post-item");
     postItem.innerHTML = `
         <h2 class="post-title">${post.title}</h2>
-        <img class="post-image-src" src="${post.img}" />
+        <img class="post-image-src" src="${
+            post.image !== null ? post.image : null
+        }" max-width="200px"/>
         <p class="post-content">${post.content}</p>
         <button class="post-edit-button">Edit</button>
         <button class="post-delete-button">Delete</button>
     `;
     postsList.appendChild(postItem);
 
-    const postTitle = document.querySelector(".post-title");
-    const postImage = document.querySelector(".post-image-src");
-    const postContent = document.querySelector(".post-content");
-
     postItem.addEventListener("click", async (e) => {
         e.preventDefault();
         const target = e.target;
+        const parentNode = target.parentNode;
 
         if (target.classList.contains("post-edit-button")) {
             const saveButton = document.createElement("button");
@@ -39,23 +38,33 @@ const renderBlogPost = (post) => {
             saveButton.addEventListener("click", async (e) => {
                 e.preventDefault();
                 const newObject = {
-                    title: postItem.children[0].value,
-                    image: postItem.children[1].value,
-                    content: postItem.children[2].value,
+                    title: parentNode.children[0].value,
+                    image: parentNode.children[1].value,
+                    content: parentNode.children[2].value,
                 };
+                console.log(parentNode.children[0].value);
                 const response = await api.updatePost(newObject, post);
 
-                console.log(response.data);
+                const title = document.createElement("h2");
+                title.classList.add("post-title");
+
+                const image = document.createElement("img");
+                ia;
+                const content = document.createElement("p");
+
                 saveButton.replaceWith(target);
 
-                postTitle.textContent = newObject.title;
-                postItem.children[0].replaceWith(postTitle);
+                console.log(response.data);
+                console.log(newObject);
 
-                postImage.src = newObject.image;
-                postItem.children[1].replaceWith(postImage);
+                title.textContent = newObject.title;
+                postItem.children[0].replaceWith(title);
 
-                postContent.textContent = newObject.content;
-                postItem.children[2].replaceWith(postContent);
+                image.src = newObject.image;
+                postItem.children[1].replaceWith(image);
+
+                content.textContent = newObject.content;
+                postItem.children[2].replaceWith(content);
             });
         }
 
