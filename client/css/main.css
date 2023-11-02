@@ -11,6 +11,11 @@ body {
     background-color: #f0f0f0;
 }
 
+textarea{
+    resize: none;
+    height: 5rem;
+}
+
 .nav-bar {
     display: flex;
     background-color: #213555;
@@ -103,17 +108,6 @@ a {
     border: none;
 }
 
-.submit-register {
-    align-self: center;
-    width: 25rem;
-    height: 3rem;
-    border-radius: 1rem;
-    border: none;
-    font-size: 1.5rem;
-    letter-spacing: 0.5rem;
-    color: cadetblue;
-}
-
 .logout-link {
     display: flex;
     justify-content: center;
@@ -132,10 +126,21 @@ a {
     justify-content: center;
     align-items: center;
     background-color: #213555;
-    height: 400px;
-    width: 600px;
+    height: 20rem;
+    width: 30rem;
     margin: auto;
     gap: 10px;
+    border-radius: 2rem;
+}
+
+.post-form > * {
+    width: 20rem;
+}
+
+.post-submit{
+    border-radius: 0.5rem;
+    height: 2rem;
+    width: 8rem;
 }
 
 .posts-container {
@@ -152,6 +157,7 @@ a {
     gap: 2rem;
     padding: 1rem;
     width: 50vw;
+    margin: auto;
 }
 
 .post-item {
@@ -159,8 +165,7 @@ a {
     border-radius: 1rem;
     padding: 1rem;
     min-height: 15rem;
-    width: 100%;
-    max-height: 20rem;
+    max-width: 50rem;
     overflow-y: hidden;
     display: flex;
     flex-direction: column;
@@ -168,13 +173,13 @@ a {
     color: #f0f0f0;
 }
 
-.post-item > button {
+.post-item-button-container > button {
     border: none;
-    border-radius: 0.2rem;
     background-color: #e5d283;
     color: #213555;
-    width: 10rem;
-    height: 4rem;
+    border-radius: 0.5rem;
+    height: 2rem;
+    width: 8rem;
     margin: 0 0 0 auto;
 }
 
@@ -204,6 +209,7 @@ a {
     width: 600px;
     margin: auto;
     gap: 10px;
+    border-radius: 0.5rem;
 }
 
 .login-form > input {
@@ -215,14 +221,14 @@ a {
     border: none;
 }
 
-.login-submit {
+.login-submit, .submit-register {
     align-self: center;
-    width: 25rem;
+    width: 15rem;
     height: 3rem;
     border-radius: 1rem;
     border: none;
     font-size: 1.5rem;
-    letter-spacing: 0.5rem;
+    letter-spacing: 0.2rem;
     color: cadetblue;
 }
 

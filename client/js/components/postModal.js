@@ -34,8 +34,6 @@ const renderPostModal = () => {
             content: data.content,
         });
 
-        console.log(response);
-
         updatePage();
         e.target.remove();
     });

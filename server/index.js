@@ -30,8 +30,6 @@ app.use((req, res, next) => {
     }
 });
 
-//openai.sendPrompt().then((req,res) => console.log(req.data.choices))
-
 app.listen(port);
 
 module.exports = app;

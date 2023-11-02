@@ -3,7 +3,6 @@ const { Schema } = mongoose;
 
 const postSchema = new Schema({
     title: String,
-    image: String,
     content: String,
     userId: {
         type: String,

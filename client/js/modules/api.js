@@ -14,11 +14,6 @@ const createUser = async (user) => {
     }catch(err){
         return err;
     }
-    // if (data.status === "success") {
-    //     console.log(data, "user created successfully");
-    // } else {
-    //     console.error("Registration failed: ", data.message);
-    // }
 };
 
 // Log user in by sending the credentials
@@ -55,13 +50,13 @@ const updateUser = async (user) => {
     const response = await fetch(`/api/users/${user._id}`, {
         method: "PUT",
         body: JSON.stringify(user),
-        header: {
+        headers: {
             Authorization: user.token,
             "Content-Type": "application/json",
         },
     });
 
-    const data = response.json();
+    const data = await response.json();
     return data
 };
 

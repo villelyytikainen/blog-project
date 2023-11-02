@@ -6,12 +6,11 @@ const renderBlogPost = (post) => {
     postItem.classList.add("post-item");
     postItem.innerHTML = `
         <h2 class="post-title">${post.title}</h2>
-        <img class="post-image-src" src="${
-            post.image !== null ? post.image : null
-        }" max-width="200px"/>
         <p class="post-content">${post.content}</p>
-        <button class="post-edit-button">Edit</button>
-        <button class="post-delete-button">Delete</button>
+        <div class="post-item-button-container">
+            <button class="post-edit-button">Edit</button>
+            <button class="post-delete-button">Delete</button>
+        </div>
     `;
     postsList.appendChild(postItem);
 
@@ -23,7 +22,7 @@ const renderBlogPost = (post) => {
         if (target.classList.contains("post-edit-button")) {
             const saveButton = document.createElement("button");
             saveButton.textContent = "Save";
-            for (let i = 0; i <= 2; ++i) {
+            for (let i = 0; i < 2; ++i) {
                 const childInput = document.createElement("input");
                 childInput.classList.add(
                     `${postItem.children[i].className}-input`
@@ -39,8 +38,7 @@ const renderBlogPost = (post) => {
                 e.preventDefault();
                 const newObject = {
                     title: parentNode.children[0].value,
-                    image: parentNode.children[1].value,
-                    content: parentNode.children[2].value,
+                    content: parentNode.children[1].value,
                 };
                 console.log(parentNode.children[0].value);
                 const response = await api.updatePost(newObject, post);
@@ -48,23 +46,15 @@ const renderBlogPost = (post) => {
                 const title = document.createElement("h2");
                 title.classList.add("post-title");
 
-                const image = document.createElement("img");
-                ia;
                 const content = document.createElement("p");
 
                 saveButton.replaceWith(target);
 
-                console.log(response.data);
-                console.log(newObject);
-
                 title.textContent = newObject.title;
                 postItem.children[0].replaceWith(title);
 
-                image.src = newObject.image;
-                postItem.children[1].replaceWith(image);
-
                 content.textContent = newObject.content;
-                postItem.children[2].replaceWith(content);
+                postItem.children[1].replaceWith(content);
             });
         }
 
