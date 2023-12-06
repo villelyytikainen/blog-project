@@ -58,7 +58,6 @@ exports.createUser = async (req, res) => {
         // const user = await userService.createUser(req.body);
         // res.json({ data: user, status: "success" });
     } catch (err) {
-        console.log(err);
         res.status(500).json({ error: err.message });
     }
 };
@@ -70,13 +69,13 @@ exports.login = async (req, res) => {
         if (!user) {
             return res
                 .status(401)
-                .json({ message: "Authentication failed because no user" });
+                .json({ message: "Incorrect credentials" });
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return res.status(401).json({
-                message: "Authentication failed because wrong password",
+            res.status(401).json({
+                message: "Incorrect credentials",
             });
         }
 
@@ -135,8 +134,6 @@ exports.verifyUser = async (req, res) => {
         }
         user.activated = true;
 
-        console.log(user);
-
         await userService.updateUser(payload.userId, user);
 
         return res.status(200).json({
@@ -151,7 +148,6 @@ exports.getUserByUsername = async (req, res) => {
     try {
         const user = await userService.getUserByUsername(req.body.username);
     } catch (err) {
-        console.log("username");
         res.status(500).json({ error: err.message });
     }
 };

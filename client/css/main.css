@@ -212,6 +212,10 @@ a {
     border-radius: 0.5rem;
 }
 
+#incorrect-credentials{
+    color: red;
+}
+
 .login-form > input {
     height: 3rem;
     margin: 0.5rem 0 2rem 0;

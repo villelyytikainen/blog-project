@@ -40,7 +40,6 @@ const renderBlogPost = (post) => {
                     title: parentNode.children[0].value,
                     content: parentNode.children[1].value,
                 };
-                console.log(parentNode.children[0].value);
                 const response = await api.updatePost(newObject, post);
 
                 const title = document.createElement("h2");

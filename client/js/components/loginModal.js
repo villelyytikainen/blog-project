@@ -4,11 +4,13 @@ import updatePage from "./updatePage.js";
 const renderLoginModal = () => {
     const mainContent = document.querySelector(".main-content");
     const modal = document.createElement("div");
+    const messageSpan = document.createElement("span");
+    messageSpan.id = "incorrect-credentials";
     modal.classList.add("modal-container");
     modal.innerHTML = `
             <form class="login-form">
                 <h2>Login</h2>
-                <input name="username" type="text" placeholder="Username"></input>
+                <input name="username" type="text" placeholder="Username" class="username-field"></input>
                 <input name="password" type="password" placeholder="Password"></input>
                 <button type="submit" class="login-submit">Log In</button>
             </form>
@@ -29,7 +31,11 @@ const renderLoginModal = () => {
         const data = Object.fromEntries(formData.entries());
         const user = await api.loginUser(data);
 
-        console.log(user);
+        messageSpan.textContent = user.message;
+        const loginForm = document.querySelector(".login-form");
+        loginForm.insertBefore(messageSpan, document.querySelector(".username-field"));
+        setTimeout(() => messageSpan.remove(), 5000);
+
         if (user.loggedIn) {
             localStorage.setItem("user", JSON.stringify(user));
         } else {

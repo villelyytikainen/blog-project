@@ -25,8 +25,7 @@ app.use("/api/posts", postRouter);
 
 app.use((req, res, next) => {
     if (res.status(404)) {
-        res.json({ error: "not found" });
-        return;
+        res.redirect("/");
     }
 });
 
