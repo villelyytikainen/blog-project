@@ -8,5 +8,8 @@ Fullstack blog project in which user can register and user is saved to a databas
 - HTML
 - CSS
 - JavaScript
+- NodeJS
+- ExpressJS
+- MongoDB
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
